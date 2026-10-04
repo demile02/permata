@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+import NewsCard from '../components/NewsCard.astro';
+import { supabase } from '../lib/supabase';
+
+const kategoriFilter = Astro.url.searchParams.get('kategori');
+
+let query = supabase
+  .from('berita')
+  .select('*, kategori:kategori_id(nama)')
+  .eq('status', 'published')
+  .order('created_at', { ascending: false });
+
+if (kategoriFilter) {
+  const { data: kat } = await supabase.from('kategori').select('id').eq('slug', kategoriFilter).single();
+  if (kat) query = query.eq('kategori_id', kat.id);
+}
+
+const { data: list } = await query.limit(20);
+const berita = (list ?? []).map((b: any) => ({ ...b, kategori_nama: b.kategori?.nama }));
+
+// Terpopuler: 5 berita dengan views terbanyak
+const { data: pop } = await supabase
+  .from('berita')
+  .select('id, judul, slug, views, created_at')
+  .eq('status', 'published')
+  .order('views', { ascending: false })
+  .order('created_at', { ascending: false })
+  .limit(5);
+const terpopuler = pop ?? [];
+
+const featured = berita[0];
+const rest = berita.slice(1);
+const demo = berita.length === 0; // Supabase belum diset
+---
+
+<Layout title={kategoriFilter ? `Kategori ${kategoriFilter} - Permata` : 'Beranda - Permata'} activeKategori={kategoriFilter}>
+  {demo ? (
+    <div class="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center">
+      <h2 class="font-bold text-lg mb-2">🚧 Supabase belum terhubung</h2>
+      <p class="text-sm text-neutral-600 mb-4">Ikuti panduan di <code class="bg-neutral-100 px-1 rounded">README.md</code> untuk menghubungkan Supabase, lalu berita akan muncul di sini.</p>
+      <a href="/kirim" class="inline-block bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded">Coba Form Kirim Berita</a>
+    </div>
+  ) : (
+    <>
+      {featured && <NewsCard berita={featured} featured={true} />}
+
+      <div class="mt-8 grid lg:grid-cols-3 gap-8">
+        {/* Kolom utama */}
+        <div class="lg:col-span-2">
+          <h2 class="text-xl font-extrabold mb-4 border-l-4 border-red-700 pl-3">
+            {kategoriFilter ? `Kategori: ${kategoriFilter}` : 'Berita Terbaru'}
+          </h2>
+          {rest.length > 0 ? (
+            <div class="grid sm:grid-cols-2 gap-5">
+              {rest.map((b) => <NewsCard berita={b} />)}
+            </div>
+          ) : (
+            !featured && (
+              <div class="text-center py-16 text-neutral-500">
+                <p class="text-lg font-medium">Belum ada berita published.</p>
+                <a href="/kirim" class="text-red-700 font-medium hover:underline">Jadilah yang pertama mengirim →</a>
+              </div>
+            )
+          )}
+        </div>
+
+        {/* Sidebar Terpopuler */}
+        {terpopuler.length > 0 && (
+          <aside>
+            <h2 class="text-xl font-extrabold mb-4 border-l-4 border-red-700 pl-3">Terpopuler</h2>
+            <ol class="space-y-4">
+              {terpopuler.map((t: any, i: number) => (
+                <li>
+                  <a href={`/berita/${t.slug}`} class="group flex gap-3 items-start">
+                    <span class="text-4xl font-extrabold text-neutral-200 group-hover:text-red-700 leading-none transition">{i + 1}</span>
+                    <div>
+                      <h3 class="font-bold text-[15px] leading-snug group-hover:text-red-700 group-hover:underline line-clamp-3">{t.judul}</h3>
+                      <p class="text-xs text-neutral-400 mt-1">{new Date(t.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })} • <svg class="inline w-3.5 h-3.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> {t.views ?? 0}x</p>
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </aside>
+        )}
+      </div>
+    </>
+  )}
+</Layout>

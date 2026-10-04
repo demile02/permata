@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { isLoggedIn } from '../lib/auth';
+
+const cookies = Astro.request.headers.get('cookie');
+if (isLoggedIn(cookies)) {
+  return Astro.redirect('/');
+}
+---
+
+<Layout title="Login - Permata">
+  <div class="max-w-sm mx-auto">
+    <h1 class="text-2xl font-extrabold mb-1">Login Admin</h1>
+    <p class="text-sm text-neutral-500 mb-6">Khusus redaksi PERMATA.</p>
+    <form id="form-login" class="space-y-4 bg-white border rounded-lg p-6">
+      <div>
+        <label class="block text-sm font-semibold mb-1" for="username">Username</label>
+        <input id="username" name="username" required autocomplete="username" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-red-700 focus:outline-none" />
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1" for="password">Password</label>
+        <input id="password" name="password" type="password" required autocomplete="current-password" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-red-700 focus:outline-none" />
+      </div>
+      <div id="status" class="hidden text-sm rounded px-3 py-2"></div>
+      <button type="submit" id="btn" class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-2.5 rounded transition disabled:opacity-50">
+        Masuk
+      </button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('form-login') as HTMLFormElement;
+    const statusEl = document.getElementById('status') as HTMLDivElement;
+    const btn = document.getElementById('btn') as HTMLButtonElement;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      btn.disabled = true;
+      btn.textContent = 'Memeriksa...';
+      statusEl.classList.add('hidden');
+      try {
+        const r = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: (document.getElementById('username') as HTMLInputElement).value,
+            password: (document.getElementById('password') as HTMLInputElement).value,
+          }),
+        });
+        const j = await r.json();
+        if (!r.ok) throw new Error(j.error || 'Login gagal.');
+        window.location.href = '/';
+      } catch (err: any) {
+        statusEl.classList.remove('hidden');
+        statusEl.textContent = '❌ ' + (err.message || 'Login gagal.');
+        statusEl.className = 'text-sm rounded px-3 py-2 bg-red-50 text-red-800 border border-red-200';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Masuk';
+      }
+    });
+  </script>
+</Layout>

@@ -1,0 +1,41 @@
+---
+import type { Berita } from '../lib/supabase';
+
+interface Props {
+  berita: Berita & { kategori_nama?: string };
+  featured?: boolean;
+}
+
+const { berita, featured = false } = Astro.props;
+const tanggal = new Date(berita.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+---
+
+{featured ? (
+  <a href={`/berita/${berita.slug}`} class="group block relative rounded-lg overflow-hidden bg-neutral-900 text-white">
+    {berita.gambar_url ? (
+      <img src={berita.gambar_url} alt={berita.judul} class="w-full h-80 sm:h-96 object-cover opacity-70 group-hover:opacity-60 transition" />
+    ) : (
+      <div class="w-full h-80 sm:h-96 bg-gradient-to-br from-red-800 to-neutral-900"></div>
+    )}
+    <div class="absolute bottom-0 p-6 bg-gradient-to-t from-black/90 to-transparent w-full">
+      <span class="inline-block bg-red-700 text-xs font-semibold px-2 py-1 rounded mb-2">{berita.kategori_nama ?? 'Berita'}</span>
+      <h2 class="text-2xl sm:text-3xl font-extrabold leading-tight group-hover:underline">{berita.judul}</h2>
+      <p class="text-sm text-neutral-300 mt-2 line-clamp-2">{berita.ringkasan}</p>
+      <p class="text-xs text-neutral-400 mt-2">{berita.penulis} • {tanggal} • <svg class="inline w-3.5 h-3.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> {berita.views ?? 0}x</p>
+    </div>
+  </a>
+) : (
+  <a href={`/berita/${berita.slug}`} class="group block bg-white rounded-lg overflow-hidden border hover:shadow-lg transition">
+    {berita.gambar_url ? (
+      <img src={berita.gambar_url} alt={berita.judul} class="w-full h-44 object-cover group-hover:scale-[1.02] transition" loading="lazy" />
+    ) : (
+      <div class="w-full h-44 bg-gradient-to-br from-neutral-200 to-neutral-300 flex items-center justify-center text-neutral-400 text-4xl font-extrabold">B</div>
+    )}
+    <div class="p-4">
+      <span class="inline-block text-red-700 text-xs font-bold uppercase tracking-wide mb-1">{berita.kategori_nama ?? 'Berita'}</span>
+      <h3 class="font-bold leading-snug group-hover:text-red-700 group-hover:underline line-clamp-2">{berita.judul}</h3>
+      <p class="text-sm text-neutral-600 mt-1 line-clamp-2">{berita.ringkasan}</p>
+      <p class="text-xs text-neutral-400 mt-2">{berita.penulis} • {tanggal} • <svg class="inline w-3.5 h-3.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> {berita.views ?? 0}x</p>
+    </div>
+  </a>
+)}

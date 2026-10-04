@@ -1,0 +1,212 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { supabase } from '../lib/supabase';
+import { isLoggedIn } from '../lib/auth';
+
+if (!isLoggedIn(Astro.request.headers.get('cookie'))) {
+  return Astro.redirect('/login');
+}
+
+const { data: kategoriList } = await supabase.from('kategori').select('id, nama').order('nama');
+---
+
+<Layout title="Kirim Berita - Permata" description="Formulir pengiriman berita kegiatan magang">
+  <div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-extrabold mb-2">Kirim Berita</h1>
+    <p class="text-neutral-600 mb-6">Bagikan laporan kegiatan magangmu. Berita akan ditinjau redaksi sebelum dipublikasikan.</p>
+
+    <form id="form-berita" class="space-y-5 bg-white border rounded-lg p-6">
+      <div>
+        <label class="block text-sm font-semibold mb-1" for="judul">Judul Berita *</label>
+        <input id="judul" name="judul" required maxlength="120" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-red-700 focus:outline-none" placeholder="cth: Kunjungan Industri ke PT Maju Bersama" />
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold mb-1" for="kategori">Kategori *</label>
+          <select id="kategori" name="kategori" required class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-red-700 focus:outline-none">
+            <option value="">- Pilih -</option>
+            {(kategoriList ?? []).map((k: any) => <option value={k.id}>{k.nama}</option>)}
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1" for="penulis">Nama Penulis *</label>
+          <input id="penulis" name="penulis" required maxlength="60" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-red-700 focus:outline-none" placeholder="Nama kamu" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-1" for="ringkasan">Ringkasan *</label>
+        <textarea id="ringkasan" name="ringkasan" required rows="2" maxlength="300" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-red-700 focus:outline-none" placeholder="1-2 kalimat pembuka berita..."></textarea>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-1" for="isi">Isi Berita *</label>
+        <textarea id="isi" name="isi" required rows="8" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-red-700 focus:outline-none" placeholder="Tulis laporan kegiatan secara lengkap..."></textarea>
+        <p class="text-xs text-neutral-500 mt-1">Untuk sisipkan foto di tengah artikel, tulis di baris tersendiri: <code class="bg-neutral-100 px-1 rounded">![keterangan foto](url-gambar)</code></p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-1" for="gambar">Foto Utama / Header (opsional, maks 5MB)</label>
+        <input id="gambar" name="gambar" type="file" accept="image/*" class="w-full text-sm" />
+      </div>
+
+      <div class="bg-neutral-50 border rounded p-4">
+        <label class="block text-sm font-semibold mb-1">Foto Tambahan (untuk disisipkan di tengah artikel)</label>
+        <input id="gambar-extra" type="file" accept="image/*" multiple class="w-full text-sm mb-2" />
+        <button type="button" id="btn-upload-extra" class="text-sm bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-1.5 rounded">Upload Foto Tambahan</button>
+        <div id="extra-list" class="mt-2 space-y-1 text-xs"></div>
+        <p class="text-xs text-neutral-500 mt-1">Upload foto, lalu klik kode yang muncul untuk menyalin & tempel ke isi berita.</p>
+      </div>
+
+      <div id="status" class="hidden text-sm rounded px-3 py-2"></div>
+
+      <button type="submit" id="btn-submit" class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3 rounded transition disabled:opacity-50">
+        Kirim Berita
+      </button>
+      <p class="text-xs text-neutral-500 text-center">Dengan mengirim, kamu menyetujui pedoman redaksi.</p>
+    </form>
+  </div>
+
+  <script>
+    import { supabase } from '../lib/supabase';
+
+    const form = document.getElementById('form-berita') as HTMLFormElement;
+    const statusEl = document.getElementById('status') as HTMLDivElement;
+    const btn = document.getElementById('btn-submit') as HTMLButtonElement;
+
+    function setStatus(msg: string, ok: boolean) {
+      statusEl.classList.remove('hidden');
+      statusEl.textContent = msg;
+      statusEl.className = `text-sm rounded px-3 py-2 ${ok ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`;
+    }
+
+    function slugify(s: string) {
+      return s.toLowerCase().trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .slice(0, 80) + '-' + Date.now().toString(36);
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      btn.disabled = true;
+      btn.textContent = 'Mengirim...';
+
+      try {
+        const fd = new FormData(form);
+        const judul = String(fd.get('judul'));
+        let gambar_url: string | null = null;
+
+        const fileInput = document.getElementById('gambar') as HTMLInputElement;
+        const file = fileInput.files?.[0];
+        if (file) {
+          if (file.size > 5 * 1024 * 1024) throw new Error('Ukuran gambar maksimal 5MB.');
+
+          // Mode lokal: upload via API internal ke public/uploads
+          // Mode Supabase: upload via Supabase Storage
+          const isLocal = import.meta.env.PUBLIC_LOCAL_UPLOAD === 'true';
+
+          if (isLocal) {
+            const upData = new FormData();
+            upData.append('file', file);
+            const upRes = await fetch('/api/upload', { method: 'POST', body: upData });
+            const upJson = await upRes.json();
+            if (!upRes.ok) throw new Error('Upload gambar gagal: ' + (upJson.error || ''));
+            gambar_url = upJson.url;
+          } else {
+            const ext = file.name.split('.').pop();
+            const path = `berita/${Date.now()}.${ext}`;
+            const { error: upErr } = await supabase.storage.from('berita').upload(path, file);
+            if (upErr) throw new Error('Upload gambar gagal: ' + upErr.message);
+            const { data } = supabase.storage.from('berita').getPublicUrl(path);
+            gambar_url = data.publicUrl;
+          }
+        }
+
+        const { error } = await supabase.from('berita').insert({
+          judul,
+          slug: slugify(judul),
+          ringkasan: String(fd.get('ringkasan')),
+          isi: String(fd.get('isi')),
+          kategori_id: String(fd.get('kategori')),
+          penulis: String(fd.get('penulis')),
+          gambar_url,
+          status: 'draft',
+        });
+
+        if (error) throw error;
+        setStatus('✅ Berita terkirim! Menunggu tinjauan redaksi sebelum dipublikasikan.', true);
+        form.reset();
+      } catch (err: any) {
+        setStatus('❌ ' + (err.message || 'Gagal mengirim.'), false);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Kirim Berita';
+      }
+    });
+
+    // Upload foto tambahan untuk disisipkan di tengah artikel
+    const btnExtra = document.getElementById('btn-upload-extra') as HTMLButtonElement;
+    const extraInput = document.getElementById('gambar-extra') as HTMLInputElement;
+    const extraList = document.getElementById('extra-list') as HTMLDivElement;
+    const isiField = document.getElementById('isi') as HTMLTextAreaElement;
+    const isLocal = import.meta.env.PUBLIC_LOCAL_UPLOAD === 'true';
+
+    async function uploadOne(file: File): Promise<string> {
+      if (file.size > 5 * 1024 * 1024) throw new Error(`"${file.name}" melebihi 5MB.`);
+      if (isLocal) {
+        const fd = new FormData();
+        fd.append('file', file);
+        const r = await fetch('/api/upload', { method: 'POST', body: fd });
+        const j = await r.json();
+        if (!r.ok) throw new Error(j.error || 'Upload gagal');
+        return j.url;
+      } else {
+        const ext = file.name.split('.').pop();
+        const path = `berita/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const { error } = await supabase.storage.from('berita').upload(path, file);
+        if (error) throw new Error(error.message);
+        return supabase.storage.from('berita').getPublicUrl(path).data.publicUrl;
+      }
+    }
+
+    btnExtra.addEventListener('click', async () => {
+      const files = extraInput.files;
+      if (!files || files.length === 0) {
+        setStatus('Pilih dulu foto tambahannya.', false);
+        return;
+      }
+      btnExtra.disabled = true;
+      btnExtra.textContent = 'Mengupload...';
+      try {
+        for (const file of Array.from(files)) {
+          const url = await uploadOne(file);
+          const code = `![${file.name}](${url})`;
+          const div = document.createElement('div');
+          div.className = 'bg-white border rounded px-2 py-1 flex justify-between items-center gap-2';
+          const span = document.createElement('code');
+          span.className = 'truncate cursor-pointer hover:text-red-700';
+          span.textContent = code;
+          span.title = 'Klik untuk salin & sisipkan ke isi berita';
+          span.addEventListener('click', () => {
+            navigator.clipboard.writeText(code);
+            isiField.value += (isiField.value.endsWith('\n') || isiField.value === '' ? '' : '\n') + code + '\n';
+            isiField.focus();
+            span.textContent = '✅ Disalin & disisipkan!';
+            setTimeout(() => { span.textContent = code; }, 1500);
+          });
+          div.appendChild(span);
+          extraList.appendChild(div);
+        }
+        setStatus(`✅ ${files.length} foto terupload. Klik kodenya untuk disisipkan ke artikel.`, true);
+        extraInput.value = '';
+      } catch (e: any) {
+        setStatus('❌ ' + (e.message || 'Upload gagal.'), false);
+      } finally {
+        btnExtra.disabled = false;
+        btnExtra.textContent = 'Upload Foto Tambahan';
+      }
+    });
+  </script>
+</Layout>

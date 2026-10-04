@@ -1,0 +1,79 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabase } from '../../lib/supabase';
+
+const { slug } = Astro.params;
+const { data } = await supabase
+  .from('berita')
+  .select('*, kategori:kategori_id(nama)')
+  .eq('slug', slug)
+  .eq('status', 'published')
+  .single();
+
+if (!data) {
+  return Astro.redirect('/404');
+}
+
+// Tambah hitungan views
+await supabase.from('berita').update({ views: (data.views ?? 0) + 1 }).eq('id', data.id);
+
+const b: any = data;
+const tanggal = new Date(b.created_at).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+// Ambil berita terkait
+const { data: related } = await supabase
+  .from('berita')
+  .select('id, judul, slug, ringkasan, gambar_url, penulis, created_at, kategori:kategori_id(nama)')
+  .eq('status', 'published')
+  .neq('id', b.id)
+  .order('created_at', { ascending: false })
+  .limit(3);
+---
+
+<Layout title={`${b.judul} - Permata`} description={b.ringkasan}>
+  <article class="max-w-3xl mx-auto">
+    <a href="/" class="text-sm text-red-700 hover:underline">← Kembali ke Beranda</a>
+    <div class="mt-3">
+      <span class="inline-block bg-red-700 text-white text-xs font-semibold px-2 py-1 rounded">{b.kategori?.nama ?? 'Berita'}</span>
+      <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight mt-2">{b.judul}</h1>
+      <p class="text-sm text-neutral-500 mt-2">Oleh <span class="font-medium text-neutral-700">{b.penulis}</span> • {tanggal} • <svg class="inline w-3.5 h-3.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> {(b.views ?? 0) + 1}x dibaca</p>
+    </div>
+    {b.gambar_url && (
+      <img src={b.gambar_url} alt={b.judul} class="w-full rounded-lg mt-6 object-cover max-h-96" />
+    )}
+    <div class="prose-berita mt-6 text-[17px]">
+      <p class="font-medium text-lg text-neutral-900">{b.ringkasan}</p>
+      {b.isi.split('\n').map((p: string) => {
+        const t = p.trim();
+        if (!t) return null;
+        // Sintaks gambar: ![keterangan](url)
+        const imgMatch = t.match(/^!\[(.*?)\]\((.*?)\)$/);
+        if (imgMatch) {
+          return (
+            <figure class="my-6">
+              <img src={imgMatch[2]} alt={imgMatch[1]} class="w-full rounded-lg object-cover" loading="lazy" />
+              {imgMatch[1] && <figcaption class="text-sm text-neutral-500 text-center mt-2">{imgMatch[1]}</figcaption>}
+            </figure>
+          );
+        }
+        return <p>{t}</p>;
+      })}
+    </div>
+  </article>
+
+  {related && related.length > 0 && (
+    <div class="max-w-3xl mx-auto mt-12">
+      <h2 class="text-xl font-extrabold mb-4 border-l-4 border-red-700 pl-3">Berita Terkait</h2>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {(related as any[]).map((r) => (
+          <a href={`/berita/${r.slug}`} class="block border rounded-lg overflow-hidden hover:shadow transition">
+            {r.gambar_url && <img src={r.gambar_url} alt={r.judul} class="w-full h-28 object-cover" loading="lazy" />}
+            <div class="p-3">
+              <h3 class="text-sm font-bold line-clamp-2 hover:text-red-700">{r.judul}</h3>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  )}
+</Layout>
