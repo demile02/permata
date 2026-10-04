@@ -37,8 +37,8 @@ const demo = berita.length === 0; // Supabase belum diset
 <Layout title={kategoriFilter ? `Kategori ${kategoriFilter} - Permata` : 'Beranda - Permata'} activeKategori={kategoriFilter}>
   {demo ? (
     <div class="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center">
-      <h2 class="font-bold text-lg mb-2">🚧 Supabase belum terhubung</h2>
-      <p class="text-sm text-neutral-600 mb-4">Ikuti panduan di <code class="bg-neutral-100 px-1 rounded">README.md</code> untuk menghubungkan Supabase, lalu berita akan muncul di sini.</p>
+      <h2 class="font-bold text-lg mb-2">Belum ada berita</h2>
+      <p class="text-sm text-neutral-600 mb-4">Berita yang sudah dipublikasikan akan muncul di sini.</p>
       <a href="/kirim" class="inline-block bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded">Coba Form Kirim Berita</a>
     </div>
   ) : (
