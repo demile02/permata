@@ -75,36 +75,21 @@ const loggedIn = isLoggedIn(Astro.request.headers.get('cookie'));
   </main>
 
   <footer class="bg-neutral-900 text-neutral-300 mt-12">
-    <div class="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 sm:grid-cols-3 gap-8 text-sm">
-      <div>
-        <div class="flex items-center gap-2 mb-3">
-          <img src="/logo-man.png" alt="Logo" class="w-8 h-8 object-contain" />
-          <h3 class="text-white font-extrabold text-lg">PERMATA</h3>
-        </div>
-        <p class="leading-relaxed">Portal Berita Magang MAN Kota Blitar 2026. Kabar kegiatan dan prestasi siswa, ditulis dari lapangan.</p>
-        <p class="mt-3 text-xs text-neutral-500">Situs ini bukan situs resmi MAN Kota Blitar.</p>
+    <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col sm:flex-row sm:items-center gap-4 text-sm">
+      <div class="flex items-center gap-2">
+        <img src="/logo-man.png" alt="Logo" class="w-7 h-7 object-contain" />
+        <span class="text-white font-extrabold">PERMATA</span>
+        <span class="text-neutral-500 text-xs hidden sm:inline">| Portal Berita Magang MAN Kota Blitar 2026</span>
       </div>
-      <div>
-        <h3 class="text-white font-bold mb-3 uppercase tracking-wide text-xs">Kategori</h3>
-        <ul class="space-y-2">
-          <li><a href="/?kategori=kegiatan" class="hover:text-white transition">Kegiatan</a></li>
-          <li><a href="/?kategori=prestasi" class="hover:text-white transition">Prestasi</a></li>
-          <li><a href="/?kategori=pengumuman" class="hover:text-white transition">Pengumuman</a></li>
-          <li><a href="/?kategori=artikel" class="hover:text-white transition">Artikel</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3 class="text-white font-bold mb-3 uppercase tracking-wide text-xs">Navigasi</h3>
-        <ul class="space-y-2">
-          <li><a href="/" class="hover:text-white transition">Beranda</a></li>
-          <li><a href="/tentang" class="hover:text-white transition">Tentang</a></li>
-          <li><a href="/kirim" class="hover:text-white transition">Kirim Berita</a></li>
-          <li><a href="/login" class="hover:text-white transition">Login Redaksi</a></li>
-        </ul>
+      <div class="flex flex-wrap gap-x-5 gap-y-1 sm:ml-auto text-xs">
+        <a href="/?kategori=kegiatan" class="hover:text-white transition">Kegiatan</a>
+        <a href="/?kategori=prestasi" class="hover:text-white transition">Prestasi</a>
+        <a href="/tentang" class="hover:text-white transition">Tentang</a>
+        <a href="/kirim" class="hover:text-white transition">Kirim Berita</a>
       </div>
     </div>
-    <div class="border-t border-neutral-800 text-center text-xs py-4 text-neutral-500">
-      &copy; {new Date().getFullYear()} Permata - Laporan Kegiatan Magang MAN Kota Blitar
+    <div class="border-t border-neutral-800 text-center text-[11px] py-3 text-neutral-500 px-4">
+      &copy; {new Date().getFullYear()} Permata - Bukan situs resmi MAN Kota Blitar
     </div>
   </footer>
 </body>
