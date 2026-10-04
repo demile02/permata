@@ -2,38 +2,45 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Tentang - Permata">
-  <div class="max-w-2xl mx-auto">
-    <h1 class="text-3xl font-extrabold mb-4">Tentang Permata</h1>
-    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6 rounded">
-      <p class="text-sm text-amber-900">
+<Layout title="Tentang - Permata" description="Tentang Permata, portal berita kegiatan magang MAN Kota Blitar">
+  <article class="mx-auto max-w-2xl">
+    <p class="inline-flex items-center rounded-full bg-kabut px-3 py-1 text-xs font-bold uppercase tracking-wider text-madrasah">Tentang</p>
+    <h1 class="font-display mt-3 text-3xl font-bold text-rimba sm:text-4xl">Tentang Permata</h1>
+
+    <div class="mt-5 rounded-2xl border-l-4 border-kunyit bg-kunyit-lembut p-5">
+      <p class="text-sm leading-relaxed text-rimba">
         <strong>Perhatian:</strong> Situs ini <strong>bukan situs resmi MAN Kota Blitar</strong>.
-        PERMATA adalah situs yang dibuat dan dikelola oleh <strong>mahasiswa magang</strong>
+        Permata dibuat dan dikelola oleh <strong>mahasiswa magang</strong>
         sebagai media dokumentasi kegiatan magang tahun 2026.
       </p>
     </div>
-    <div class="prose-berita">
-      <p>
-        <strong>PERMATA</strong> (Portal Berita Magang MAN Kota Blitar 2026) adalah portal berita
+
+    <div class="prose-berita mt-6">
+      <p class="leadin">
+        Permata (Portal Berita Magang MAN Kota Blitar 2026) adalah portal berita
         tentang MAN Kota Blitar, mulai dari kegiatan sekolah, prestasi siswa,
         hingga berbagai kabar terkini dari lingkungan madrasah.
       </p>
       <p>
         Situs ini dibuat dan dikelola oleh <strong>mahasiswa magang</strong> sebagai bagian
-        dari kegiatan praktik kerja lapangan tahun 2026.
+        dari kegiatan praktik kerja lapangan tahun 2026. Setiap laporan ditulis
+        dari lapangan, lalu disunting redaksi magang sebelum terbit.
       </p>
       <p>
         Setiap siswa dapat berkontribusi dengan mengirimkan laporan kegiatan
-        melalui halaman <a href="/kirim" class="text-red-700 hover:underline font-medium">Kirim Berita</a>.
+        melalui halaman <a href="/kirim">Kirim Berita</a>.
         Kiriman akan ditinjau oleh redaksi sebelum dipublikasikan.
       </p>
-      <h2 class="text-xl font-bold mt-6 mb-2">Pedoman Singkat</h2>
-      <ul class="list-disc pl-5 space-y-1 text-neutral-800">
-        <li>Tulis dengan bahasa yang jelas dan faktual.</li>
-        <li>Sertakan foto kegiatan bila memungkinkan.</li>
-        <li>Cantumkan nama penulis dengan benar.</li>
-        <li>Hindari konten SARA dan ujaran kebencian.</li>
-      </ul>
+
+      <h2 class="font-display mb-3 mt-8 text-2xl font-bold text-rimba">Pedoman Singkat</h2>
+      <div class="rounded-2xl bg-kabut p-6">
+        <ul>
+          <li>Tulis dengan bahasa yang jelas dan faktual.</li>
+          <li>Sertakan foto kegiatan bila memungkinkan.</li>
+          <li>Cantumkan nama penulis dengan benar.</li>
+          <li>Hindari konten SARA dan ujaran kebencian.</li>
+        </ul>
+      </div>
     </div>
-  </div>
+  </article>
 </Layout>

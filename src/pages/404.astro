@@ -2,10 +2,19 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="404 - Permata">
-  <div class="text-center py-20">
-    <h1 class="text-6xl font-extrabold text-neutral-300">404</h1>
-    <p class="text-lg text-neutral-600 mt-2">Halaman tidak ditemukan.</p>
-    <a href="/" class="inline-block mt-4 bg-red-700 text-white px-5 py-2 rounded font-semibold">← Kembali ke Beranda</a>
+<Layout title="Halaman Tidak Ditemukan - Permata" description="Halaman yang kamu cari tidak ditemukan">
+  <div class="mx-auto max-w-xl py-14 text-center sm:py-20">
+    <p class="inline-flex items-center rounded-full bg-kabut px-3 py-1 text-xs font-bold uppercase tracking-wider text-madrasah">Kode 404</p>
+    <p class="font-display mt-4 text-7xl font-bold text-rimba sm:text-8xl" aria-hidden="true">404</p>
+    <span class="mx-auto mt-4 block h-1.5 w-24 rounded-full bg-kunyit" aria-hidden="true"></span>
+    <h1 class="font-display mt-4 text-2xl font-bold text-rimba">Halaman tidak ditemukan</h1>
+    <p class="mx-auto mt-2 max-w-md text-[15px] leading-relaxed text-neutral-600">Alamat yang kamu buka mungkin sudah dipindah atau tidak pernah ada. Kembali ke beranda untuk membaca berita terbaru.</p>
+    <div class="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <a href="/" class="inline-flex min-h-[48px] w-full items-center justify-center rounded-full bg-madrasah px-6 py-3 text-sm font-bold text-white transition hover:bg-madrasah-deep sm:w-auto">
+        <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+        Kembali ke Beranda
+      </a>
+      <a href="/tentang" class="inline-flex min-h-[48px] w-full items-center justify-center rounded-full border border-madrasah/40 px-6 py-3 text-sm font-bold text-madrasah transition hover:bg-kabut sm:w-auto">Tentang Permata</a>
+    </div>
   </div>
 </Layout>

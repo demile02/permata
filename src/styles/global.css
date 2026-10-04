@@ -1,8 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Georgia", ui-serif, serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+
+  --color-rimba: #0e2a1f;
+  --color-madrasah: #17603a;
+  --color-madrasah-deep: #0f4529;
+  --color-kunyit: #b88917;
+  --color-kunyit-tua: #7a5b0e;
+  --color-kunyit-lembut: #f6eed3;
+  --color-kabut: #edf2ec;
+  --color-kertas: #ffffff;
 }
 
 html {
@@ -10,9 +19,87 @@ html {
 }
 
 body {
-  @apply bg-white text-neutral-900 antialiased;
+  @apply bg-kertas text-neutral-900 antialiased;
+  font-family: var(--font-sans);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+::selection {
+  background: var(--color-kunyit-lembut);
+  color: var(--color-rimba);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-kunyit);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Isi artikel */
+.prose-berita {
+  max-width: 44rem;
 }
 
 .prose-berita p {
-  @apply mb-4 leading-relaxed text-neutral-800;
+  @apply mb-5 text-neutral-800;
+  line-height: 1.85;
+  font-size: 1.0625rem;
+}
+
+.prose-berita p.leadin {
+  @apply text-neutral-900;
+  font-size: 1.25rem;
+  line-height: 1.7;
+  font-weight: 500;
+}
+
+.prose-berita p.leadin::first-letter {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 3.2em;
+  float: left;
+  line-height: 0.9;
+  padding-right: 0.12em;
+  color: var(--color-madrasah);
+}
+
+.prose-berita figure {
+  @apply my-8;
+}
+
+.prose-berita figcaption {
+  @apply mt-2 text-center text-sm text-neutral-500;
+}
+
+.prose-berita a {
+  color: var(--color-madrasah);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.prose-berita ul {
+  @apply mb-5 space-y-2 pl-6 text-neutral-800;
+  list-style: disc;
+  line-height: 1.8;
+}
+
+/* Bingkai lengkung khas madrasah untuk foto utama */
+.bingkai-lengkung {
+  border-radius: 999px 999px 1.25rem 1.25rem;
 }
