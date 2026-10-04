@@ -10,19 +10,8 @@ interface Props {
 
 const { title = 'Permata', description = 'Portal Berita Magang MAN Kota Blitar 2026', activeKategori = null } = Astro.props;
 const loggedIn = isLoggedIn(Astro.request.headers.get('cookie'));
-const path = Astro.url.pathname;
-const navItems = [
-  { href: '/', label: 'Beranda', key: null },
-  { href: '/?kategori=kegiatan', label: 'Kegiatan', key: 'kegiatan' },
-  { href: '/?kategori=prestasi', label: 'Prestasi', key: 'prestasi' },
-  { href: '/tentang', label: 'Tentang', key: 'tentang' },
-];
-function navAktif(key: string | null): boolean {
-  if (key === 'tentang') return path === '/tentang';
-  if (path === '/' || path.startsWith('/berita')) return activeKategori === key;
-  return false;
-}
 ---
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -31,57 +20,48 @@ function navAktif(key: string | null): boolean {
   <meta name="description" content={description} />
   <title>{title}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <a href="#konten" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-rimba focus:text-white focus:px-4 focus:py-2 focus:rounded">Lewati ke konten</a>
-
-  <!-- Pita atas -->
-  <div class="bg-rimba text-white/90 text-xs sm:text-[13px]">
-    <div class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between gap-3">
-      <p class="truncate">Kabar kegiatan dan prestasi siswa, ditulis dari lapangan</p>
-      <p class="hidden md:block shrink-0 text-kunyit-lembut/90">Blitar, Jawa Timur</p>
-    </div>
-  </div>
-
   <!-- Header -->
-  <header class="border-b border-neutral-200 bg-kertas">
-    <div class="max-w-6xl mx-auto px-4 pt-5 pb-4 flex items-center justify-between gap-4">
-      <a href="/" class="flex items-center gap-3 min-h-[48px]">
-        <span class="grid place-items-center w-12 h-12 shrink-0 overflow-hidden rounded-full border-2 border-madrasah/70 bg-kabut">
-          <img src="/logo-man.png" alt="Logo MAN Kota Blitar" class="w-9 h-9 object-contain" />
-        </span>
-        <span>
-          <span class="font-display block text-[26px] leading-none font-bold text-rimba tracking-tight">Permata</span>
-          <span class="block text-xs text-neutral-500 mt-1">Portal berita magang MAN Kota Blitar</span>
-        </span>
+  <header class="border-b-4 border-red-700">
+    <div class="max-w-6xl mx-auto px-4 py-5 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3">
+        <img src="/logo-man.png" alt="Logo MAN Kota Blitar" class="w-12 h-12 object-contain" />
+        <div>
+          <h1 class="text-2xl font-extrabold tracking-tight">PERMATA</h1>
+          <p class="text-xs text-neutral-500 hidden sm:block">Portal Berita Magang MAN Kota Blitar 2026</p>
+        </div>
       </a>
       {loggedIn ? (
         <div class="flex items-center gap-2">
-          <a href="/kirim" class="inline-flex items-center min-h-[44px] bg-madrasah hover:bg-madrasah-deep text-white text-sm font-bold px-5 py-2.5 rounded-full transition-colors">
-            Tulis berita
+          <a href="/kirim" class="bg-red-700 hover:bg-red-800 text-white text-sm font-semibold px-4 py-2 rounded transition">
+            + Kirim Berita
           </a>
-          <a href="/api/logout" class="inline-flex items-center min-h-[44px] text-sm font-medium text-neutral-500 hover:text-rimba px-4 py-2">Keluar</a>
+          <a href="/api/logout" class="text-sm text-neutral-500 hover:text-red-700 px-2 py-2">Keluar</a>
         </div>
       ) : (
-        <a href="/login" class="inline-flex items-center min-h-[44px] text-sm font-bold text-madrasah border border-madrasah/40 hover:bg-kabut px-5 py-2.5 rounded-full transition-colors">Masuk redaksi</a>
+        <a href="/login" class="text-sm text-neutral-500 hover:text-red-700 font-medium px-4 py-2">Login</a>
       )}
     </div>
-    <nav aria-label="Navigasi utama" class="border-t border-neutral-200">
-      <div class="max-w-6xl mx-auto px-4 flex gap-1 overflow-x-auto">
-        {navItems.map((item) => {
-          const aktif = navAktif(item.key);
+    <!-- Nav -->
+    <nav class="bg-neutral-100 border-t">
+      <div class="max-w-6xl mx-auto px-4 flex gap-1 overflow-x-auto text-sm font-medium">
+        {[
+          { href: '/', label: 'Beranda', key: null },
+          { href: '/?kategori=kegiatan', label: 'Kegiatan', key: 'kegiatan' },
+          { href: '/?kategori=prestasi', label: 'Prestasi', key: 'prestasi' },
+          { href: '/tentang', label: 'Tentang', key: 'tentang' },
+        ].map((item) => {
+          const isActive = activeKategori === item.key || (item.key === 'tentang' && Astro.url.pathname === '/tentang');
           return (
             <a
               href={item.href}
-              aria-current={aktif ? 'page' : undefined}
               class:list={[
-                'relative inline-flex items-center min-h-[48px] px-4 py-3 text-[15px] whitespace-nowrap transition-colors',
-                aktif ? 'text-rimba font-bold' : 'text-neutral-500 hover:text-rimba font-medium',
+                'px-4 py-3 whitespace-nowrap transition-colors',
+                isActive ? 'bg-white text-red-700 font-bold' : 'hover:bg-white hover:text-red-700',
               ]}
             >
-              {aktif && <span aria-hidden="true" class="absolute inset-x-3 bottom-0 h-[3px] rounded-full bg-kunyit"></span>}
               {item.label}
             </a>
           );
@@ -90,30 +70,26 @@ function navAktif(key: string | null): boolean {
     </nav>
   </header>
 
-  <main id="konten" class="max-w-6xl mx-auto px-4 py-8 sm:py-10 min-h-[60vh]">
+  <main class="max-w-6xl mx-auto px-4 py-8 min-h-[60vh]">
     <slot />
   </main>
 
-  <footer class="bg-rimba text-white/80 mt-16">
-    <div class="h-1.5 bg-kunyit" aria-hidden="true"></div>
-    <div class="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 sm:grid-cols-3 gap-8 text-sm">
-      <div class="sm:col-span-2">
-        <p class="font-display text-2xl font-bold text-white">Permata</p>
-        <p class="mt-2 max-w-md leading-relaxed">Portal berita kegiatan magang siswa MAN Kota Blitar tahun 2026. Ditulis dari lapangan, disunting redaksi magang.</p>
-        <p class="mt-4 text-[13px] leading-relaxed text-white/60 border-l-2 border-kunyit pl-3">Situs ini bukan situs resmi MAN Kota Blitar. Situs resmi madrasah dikelola tersendiri oleh pihak madrasah.</p>
-      </div>
+  <footer class="bg-neutral-900 text-neutral-300 mt-12">
+    <div class="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
       <div>
-        <p class="text-white font-bold mb-3">Jelajahi</p>
-        <ul class="space-y-2.5">
-          <li><a href="/?kategori=kegiatan" class="inline-flex items-center min-h-[44px] hover:text-kunyit-lembut hover:underline underline-offset-4">Kegiatan</a></li>
-          <li><a href="/?kategori=prestasi" class="inline-flex items-center min-h-[44px] hover:text-kunyit-lembut hover:underline underline-offset-4">Prestasi</a></li>
-          <li><a href="/tentang" class="inline-flex items-center min-h-[44px] hover:text-kunyit-lembut hover:underline underline-offset-4">Tentang Permata</a></li>
-          <li><a href="/kirim" class="inline-flex items-center min-h-[44px] hover:text-kunyit-lembut hover:underline underline-offset-4">Kirim berita</a></li>
+        <h3 class="text-white font-bold mb-2">PERMATA</h3>
+        <p>Portal Berita Magang MAN Kota Blitar 2026. Situs ini bukan situs resmi MAN Kota Blitar.</p>
+      </div>
+      <div class="sm:text-right">
+        <h3 class="text-white font-bold mb-2">Kategori</h3>
+        <ul class="space-y-1">
+          <li><a href="/?kategori=kegiatan" class="hover:text-white">Kegiatan</a></li>
+          <li><a href="/?kategori=prestasi" class="hover:text-white">Prestasi</a></li>
         </ul>
       </div>
     </div>
-    <div class="border-t border-white/15 text-center text-xs py-4 px-4 text-white/55">
-      &copy; {new Date().getFullYear()} Permata. Laporan kegiatan magang MAN Kota Blitar.
+    <div class="border-t border-neutral-800 text-center text-xs py-4">
+      &copy; {new Date().getFullYear()} Permata - Laporan Kegiatan Magang MAN Kota Blitar
     </div>
   </footer>
 </body>

@@ -8,30 +8,24 @@ if (isLoggedIn(cookies)) {
 }
 ---
 
-<Layout title="Masuk Redaksi - Permata" description="Halaman masuk khusus redaksi Permata">
-  <div class="mx-auto max-w-sm py-6">
-    <div class="text-center">
-      <span class="font-display mx-auto grid h-14 w-14 place-items-center rounded-full border border-madrasah/25 bg-kabut text-2xl font-bold text-madrasah" aria-hidden="true">P</span>
-      <h1 class="font-display mt-4 text-3xl font-bold text-rimba">Masuk Redaksi</h1>
-      <p class="mt-1.5 text-sm leading-relaxed text-neutral-500">Khusus redaksi Permata. Kelola dan publikasikan berita kegiatan magang.</p>
-    </div>
-    <form id="form-login" class="mt-6 space-y-4 rounded-2xl border border-neutral-200 bg-kertas p-6 shadow-sm">
+<Layout title="Login - Permata">
+  <div class="max-w-sm mx-auto">
+    <h1 class="text-2xl font-extrabold mb-1">Login Admin</h1>
+    <p class="text-sm text-neutral-500 mb-6">Khusus redaksi PERMATA.</p>
+    <form id="form-login" class="space-y-4 bg-white border rounded-lg p-6">
       <div>
-        <label class="mb-1.5 block text-sm font-bold text-rimba" for="username">Nama pengguna</label>
-        <input id="username" name="username" required autocomplete="username" placeholder="cth: redaksi" class="w-full min-h-[48px] rounded-xl border border-neutral-300 bg-kertas px-4 py-3 text-[15px] text-neutral-900 placeholder:text-neutral-400 transition focus:border-madrasah focus:outline-none focus:ring-2 focus:ring-madrasah/25" />
+        <label class="block text-sm font-semibold mb-1" for="username">Username</label>
+        <input id="username" name="username" required autocomplete="username" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-red-700 focus:outline-none" />
       </div>
       <div>
-        <label class="mb-1.5 block text-sm font-bold text-rimba" for="password">Kata sandi</label>
-        <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Masukkan kata sandi" class="w-full min-h-[48px] rounded-xl border border-neutral-300 bg-kertas px-4 py-3 text-[15px] text-neutral-900 placeholder:text-neutral-400 transition focus:border-madrasah focus:outline-none focus:ring-2 focus:ring-madrasah/25" />
+        <label class="block text-sm font-semibold mb-1" for="password">Password</label>
+        <input id="password" name="password" type="password" required autocomplete="current-password" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-red-700 focus:outline-none" />
       </div>
-      <div id="status" class="hidden text-sm rounded-xl px-4 py-3" role="alert"></div>
-      <button type="submit" id="btn" class="inline-flex w-full min-h-[52px] items-center justify-center rounded-full bg-madrasah px-6 py-3 text-[15px] font-bold text-white transition hover:bg-madrasah-deep disabled:opacity-50">
+      <div id="status" class="hidden text-sm rounded px-3 py-2"></div>
+      <button type="submit" id="btn" class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-2.5 rounded transition disabled:opacity-50">
         Masuk
       </button>
     </form>
-    <p class="mt-5 text-center text-xs text-neutral-500">
-      <a href="/" class="inline-flex min-h-[44px] items-center font-semibold text-madrasah underline decoration-kunyit decoration-2 underline-offset-4 hover:text-madrasah-deep">Kembali ke beranda</a>
-    </p>
   </div>
 
   <script>
@@ -58,8 +52,8 @@ if (isLoggedIn(cookies)) {
         window.location.href = '/';
       } catch (err: any) {
         statusEl.classList.remove('hidden');
-        statusEl.textContent = err.message || 'Login gagal.';
-        statusEl.className = 'text-sm rounded-xl px-4 py-3 bg-red-50 text-red-800 border border-red-200';
+        statusEl.textContent = '❌ ' + (err.message || 'Login gagal.');
+        statusEl.className = 'text-sm rounded px-3 py-2 bg-red-50 text-red-800 border border-red-200';
       } finally {
         btn.disabled = false;
         btn.textContent = 'Masuk';

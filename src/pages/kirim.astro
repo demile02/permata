@@ -8,70 +8,63 @@ if (!isLoggedIn(Astro.request.headers.get('cookie'))) {
 }
 
 const { data: kategoriList } = await supabase.from('kategori').select('id, nama').order('nama');
-
-const field = 'w-full min-h-[48px] rounded-xl border border-neutral-300 bg-kertas px-4 py-3 text-[15px] text-neutral-900 placeholder:text-neutral-400 transition focus:border-madrasah focus:outline-none focus:ring-2 focus:ring-madrasah/25';
-const label = 'mb-1.5 block text-sm font-bold text-rimba';
 ---
 
 <Layout title="Kirim Berita - Permata" description="Formulir pengiriman berita kegiatan magang">
-  <div class="mx-auto max-w-2xl">
-    <p class="inline-flex items-center rounded-full bg-kabut px-3 py-1 text-xs font-bold uppercase tracking-wider text-madrasah">Kontribusi pembaca</p>
-    <h1 class="font-display mt-3 text-3xl font-bold text-rimba sm:text-4xl">Kirim Berita</h1>
-    <p class="mt-2 text-[15px] leading-relaxed text-neutral-600">Bagikan laporan kegiatan magangmu. Berita akan ditinjau redaksi sebelum dipublikasikan.</p>
+  <div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-extrabold mb-2">Kirim Berita</h1>
+    <p class="text-neutral-600 mb-6">Bagikan laporan kegiatan magangmu. Berita akan ditinjau redaksi sebelum dipublikasikan.</p>
 
-    <form id="form-berita" class="mt-6 space-y-5 rounded-2xl border border-neutral-200 bg-kertas p-5 shadow-sm sm:p-7">
+    <form id="form-berita" class="space-y-5 bg-white border rounded-lg p-6">
       <div>
-        <label class={label} for="judul">Judul Berita *</label>
-        <input id="judul" name="judul" required maxlength="120" class={field} placeholder="cth: Kunjungan Industri ke PT Maju Bersama" />
+        <label class="block text-sm font-semibold mb-1" for="judul">Judul Berita *</label>
+        <input id="judul" name="judul" required maxlength="120" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-red-700 focus:outline-none" placeholder="cth: Kunjungan Industri ke PT Maju Bersama" />
       </div>
 
-      <div class="grid gap-5 sm:grid-cols-2">
+      <div class="grid sm:grid-cols-2 gap-4">
         <div>
-          <label class={label} for="kategori">Kategori *</label>
-          <select id="kategori" name="kategori" required class={field}>
-            <option value="">Pilih kategori</option>
+          <label class="block text-sm font-semibold mb-1" for="kategori">Kategori *</label>
+          <select id="kategori" name="kategori" required class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-red-700 focus:outline-none">
+            <option value="">- Pilih -</option>
             {(kategoriList ?? []).map((k: any) => <option value={k.id}>{k.nama}</option>)}
           </select>
         </div>
         <div>
-          <label class={label} for="penulis">Nama Penulis *</label>
-          <input id="penulis" name="penulis" required maxlength="60" class={field} placeholder="Nama kamu" />
+          <label class="block text-sm font-semibold mb-1" for="penulis">Nama Penulis *</label>
+          <input id="penulis" name="penulis" required maxlength="60" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-red-700 focus:outline-none" placeholder="Nama kamu" />
         </div>
       </div>
 
       <div>
-        <label class={label} for="ringkasan">Ringkasan *</label>
-        <textarea id="ringkasan" name="ringkasan" required rows="2" maxlength="300" class={field} placeholder="1-2 kalimat pembuka berita..."></textarea>
-        <p class="mt-1.5 text-xs text-neutral-500">Tulis pembuka yang memancing rasa ingin tahu dalam satu atau dua kalimat.</p>
+        <label class="block text-sm font-semibold mb-1" for="ringkasan">Ringkasan *</label>
+        <textarea id="ringkasan" name="ringkasan" required rows="2" maxlength="300" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-red-700 focus:outline-none" placeholder="1-2 kalimat pembuka berita..."></textarea>
       </div>
 
       <div>
-        <label class={label} for="isi">Isi Berita *</label>
-        <textarea id="isi" name="isi" required rows="8" class={field} placeholder="Tulis laporan kegiatan secara lengkap..."></textarea>
-        <p class="mt-1.5 text-xs leading-relaxed text-neutral-500">Untuk sisipkan foto di tengah artikel, tulis di baris tersendiri: <code class="rounded bg-kabut px-1.5 py-0.5 font-mono text-madrasah-deep">![keterangan foto](url-gambar)</code></p>
+        <label class="block text-sm font-semibold mb-1" for="isi">Isi Berita *</label>
+        <textarea id="isi" name="isi" required rows="8" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-red-700 focus:outline-none" placeholder="Tulis laporan kegiatan secara lengkap..."></textarea>
+        <p class="text-xs text-neutral-500 mt-1">Untuk sisipkan foto di tengah artikel, tulis di baris tersendiri: <code class="bg-neutral-100 px-1 rounded">![keterangan foto](url-gambar)</code></p>
       </div>
 
-      <div class="rounded-xl border border-dashed border-madrasah/30 bg-kabut/50 p-4">
-        <label class={label} for="gambar">Foto Utama</label>
-        <input id="gambar" name="gambar" type="file" accept="image/*" class="block w-full min-h-[44px] text-sm text-neutral-600 file:mr-3 file:min-h-[44px] file:rounded-full file:border-0 file:bg-madrasah file:px-4 file:py-2.5 file:text-sm file:font-bold file:text-white hover:file:bg-madrasah-deep" />
-        <p class="mt-1.5 text-xs text-neutral-500">Opsional, ukuran maksimal 5MB. Foto ini tampil sebagai gambar sampul berita.</p>
+      <div>
+        <label class="block text-sm font-semibold mb-1" for="gambar">Foto Utama / Header (opsional, maks 5MB)</label>
+        <input id="gambar" name="gambar" type="file" accept="image/*" class="w-full text-sm" />
       </div>
 
-      <div class="rounded-xl border border-madrasah/15 bg-kabut p-4 sm:p-5">
-        <p class="text-sm font-bold text-rimba">Foto Tambahan</p>
-        <p class="mt-0.5 text-xs text-neutral-500">Untuk disisipkan di tengah artikel.</p>
-        <input id="gambar-extra" type="file" accept="image/*" multiple class="mt-3 block w-full min-h-[44px] text-sm text-neutral-600 file:mr-3 file:min-h-[44px] file:rounded-full file:border-0 file:bg-kertas file:px-4 file:py-2.5 file:text-sm file:font-bold file:text-madrasah hover:file:bg-kunyit-lembut" />
-        <button type="button" id="btn-upload-extra" class="mt-3 inline-flex min-h-[44px] items-center rounded-full bg-rimba px-5 py-2.5 text-sm font-bold text-white transition hover:bg-madrasah-deep disabled:opacity-50">Upload Foto Tambahan</button>
-        <div id="extra-list" class="mt-2 space-y-1.5 text-xs"></div>
-        <p class="mt-2 text-xs text-neutral-500">Upload foto, lalu klik kode yang muncul untuk menyalin dan menempelkannya ke isi berita.</p>
+      <div class="bg-neutral-50 border rounded p-4">
+        <label class="block text-sm font-semibold mb-1">Foto Tambahan (untuk disisipkan di tengah artikel)</label>
+        <input id="gambar-extra" type="file" accept="image/*" multiple class="w-full text-sm mb-2" />
+        <button type="button" id="btn-upload-extra" class="text-sm bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-1.5 rounded">Upload Foto Tambahan</button>
+        <div id="extra-list" class="mt-2 space-y-1 text-xs"></div>
+        <p class="text-xs text-neutral-500 mt-1">Upload foto, lalu klik kode yang muncul untuk menyalin & tempel ke isi berita.</p>
       </div>
 
-      <div id="status" class="hidden text-sm rounded-xl px-4 py-3" role="status" aria-live="polite"></div>
+      <div id="status" class="hidden text-sm rounded px-3 py-2"></div>
 
-      <button type="submit" id="btn-submit" class="inline-flex w-full min-h-[52px] items-center justify-center rounded-full bg-madrasah px-6 py-3.5 text-[15px] font-bold text-white transition hover:bg-madrasah-deep disabled:opacity-50">
+      <button type="submit" id="btn-submit" class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3 rounded transition disabled:opacity-50">
         Kirim Berita
       </button>
-      <p class="text-center text-xs text-neutral-500">Dengan mengirim, kamu menyetujui pedoman redaksi.</p>
+      <p class="text-xs text-neutral-500 text-center">Dengan mengirim, kamu menyetujui pedoman redaksi.</p>
     </form>
   </div>
 
@@ -85,7 +78,7 @@ const label = 'mb-1.5 block text-sm font-bold text-rimba';
     function setStatus(msg: string, ok: boolean) {
       statusEl.classList.remove('hidden');
       statusEl.textContent = msg;
-      statusEl.className = `text-sm rounded-xl px-4 py-3 ${ok ? 'bg-kabut text-madrasah-deep border border-madrasah/30' : 'bg-red-50 text-red-800 border border-red-200'}`;
+      statusEl.className = `text-sm rounded px-3 py-2 ${ok ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`;
     }
 
     function slugify(s: string) {
@@ -143,10 +136,10 @@ const label = 'mb-1.5 block text-sm font-bold text-rimba';
         });
 
         if (error) throw error;
-        setStatus('Berita terkirim. Menunggu tinjauan redaksi sebelum dipublikasikan.', true);
+        setStatus('✅ Berita terkirim! Menunggu tinjauan redaksi sebelum dipublikasikan.', true);
         form.reset();
       } catch (err: any) {
-        setStatus(err.message || 'Gagal mengirim.', false);
+        setStatus('❌ ' + (err.message || 'Gagal mengirim.'), false);
       } finally {
         btn.disabled = false;
         btn.textContent = 'Kirim Berita';
@@ -191,25 +184,25 @@ const label = 'mb-1.5 block text-sm font-bold text-rimba';
           const url = await uploadOne(file);
           const code = `![${file.name}](${url})`;
           const div = document.createElement('div');
-          div.className = 'bg-white border border-neutral-200 rounded-xl px-3 py-2 flex justify-between items-center gap-2';
+          div.className = 'bg-white border rounded px-2 py-1 flex justify-between items-center gap-2';
           const span = document.createElement('code');
-          span.className = 'truncate cursor-pointer hover:text-madrasah min-h-[44px] flex items-center';
+          span.className = 'truncate cursor-pointer hover:text-red-700';
           span.textContent = code;
-          span.title = 'Klik untuk salin dan sisipkan ke isi berita';
+          span.title = 'Klik untuk salin & sisipkan ke isi berita';
           span.addEventListener('click', () => {
             navigator.clipboard.writeText(code);
             isiField.value += (isiField.value.endsWith('\n') || isiField.value === '' ? '' : '\n') + code + '\n';
             isiField.focus();
-            span.textContent = 'Disalin dan disisipkan ke isi berita.';
+            span.textContent = '✅ Disalin & disisipkan!';
             setTimeout(() => { span.textContent = code; }, 1500);
           });
           div.appendChild(span);
           extraList.appendChild(div);
         }
-        setStatus(`${files.length} foto terupload. Klik kodenya untuk disisipkan ke artikel.`, true);
+        setStatus(`✅ ${files.length} foto terupload. Klik kodenya untuk disisipkan ke artikel.`, true);
         extraInput.value = '';
       } catch (e: any) {
-        setStatus(e.message || 'Upload gagal.', false);
+        setStatus('❌ ' + (e.message || 'Upload gagal.'), false);
       } finally {
         btnExtra.disabled = false;
         btnExtra.textContent = 'Upload Foto Tambahan';
