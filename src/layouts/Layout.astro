@@ -74,22 +74,14 @@ const loggedIn = isLoggedIn(Astro.request.headers.get('cookie'));
     <slot />
   </main>
 
-  <footer class="bg-neutral-900 text-neutral-300 mt-12">
-    <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col sm:flex-row sm:items-center gap-4 text-sm">
-      <div class="flex items-center gap-2">
-        <img src="/logo-man.png" alt="Logo" class="w-7 h-7 object-contain" />
-        <span class="text-white font-extrabold">PERMATA</span>
-        <span class="text-neutral-500 text-xs hidden sm:inline">| Portal Berita Magang MAN Kota Blitar 2026</span>
-      </div>
-      <div class="flex flex-wrap gap-x-5 gap-y-1 sm:ml-auto text-xs">
-        <a href="/?kategori=kegiatan" class="hover:text-white transition">Kegiatan</a>
-        <a href="/?kategori=prestasi" class="hover:text-white transition">Prestasi</a>
-        <a href="/tentang" class="hover:text-white transition">Tentang</a>
-        <a href="/kirim" class="hover:text-white transition">Kirim Berita</a>
-      </div>
-    </div>
-    <div class="border-t border-neutral-800 text-center text-[11px] py-3 text-neutral-500 px-4">
-      &copy; {new Date().getFullYear()} Permata - Bukan situs resmi MAN Kota Blitar
+  <footer class="bg-neutral-900 text-neutral-400 mt-12">
+    <div class="max-w-6xl mx-auto px-4 py-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+      <span class="text-white font-bold">PERMATA</span>
+      <a href="/?kategori=kegiatan" class="hover:text-white transition">Kegiatan</a>
+      <a href="/?kategori=prestasi" class="hover:text-white transition">Prestasi</a>
+      <a href="/tentang" class="hover:text-white transition">Tentang</a>
+      <a href="/kirim" class="hover:text-white transition">Kirim Berita</a>
+      <span class="sm:ml-auto text-neutral-600">&copy; 2026 - Bukan situs resmi MAN Kota Blitar</span>
     </div>
   </footer>
 </body>
