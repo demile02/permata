@@ -1,0 +1,74 @@
+{
+  "kategori": [
+    {
+      "nama": "Kegiatan",
+      "slug": "kegiatan"
+    },
+    {
+      "nama": "Pengumuman",
+      "slug": "pengumuman"
+    },
+    {
+      "nama": "Prestasi",
+      "slug": "prestasi"
+    },
+    {
+      "nama": "Artikel",
+      "slug": "artikel"
+    }
+  ],
+  "berita": [
+    {
+      "id": "e6c83ebe-c324-406a-8c81-250d5b259202",
+      "judul": "Demo: Praktik Kerja Lapangan Siswa di Industri Kreatif",
+      "slug": "demo-praktik-kerja-lapangan-siswa",
+      "ringkasan": "Siswa melaksanakan praktik kerja lapangan di perusahaan industri kreatif.",
+      "isi": "Ini adalah artikel demo yang disubmit otomatis untuk testing.\n\nPada hari ini, siswa magang melaksanakan kegiatan praktik kerja lapangan di sebuah perusahaan industri kreatif. Kegiatan meliputi observasi proses produksi, diskusi dengan mentor, dan praktik langsung.\n\n![Suasana praktik kerja lapangan siswa](/uploads/demo-magang-1.jpg)\n\nDiharapkan pengalaman ini menambah wawasan dan keterampilan siswa sebelum terjun ke dunia kerja.",
+      "gambar_url": "/uploads/demo-magang-1.jpg",
+      "kategori_nama": "Kegiatan",
+      "kategori_slug": "kegiatan",
+      "penulis": "Demo Bot",
+      "status": "draft",
+      "created_at": "2026-10-03T22:44:07.616689+00:00"
+    },
+    {
+      "id": "98c72143-ad3e-4ea7-874b-661aa7ed2a8a",
+      "judul": "Kunjungan Industri ke PT Maju Bersama",
+      "slug": "kunjungan-industri-pt-maju-bersama",
+      "ringkasan": "Siswa magang mengunjungi PT Maju Bersama untuk mempelajari proses produksi modern.",
+      "isi": "Pada hari Senin, rombongan siswa magang melakukan kunjungan industri ke PT Maju Bersama.\n\nKegiatan diawali dengan sambutan dari HRD perusahaan, dilanjutkan dengan tur ke area produksi. Siswa diperkenalkan pada mesin-mesin modern dan standar keselamatan kerja.\n\n\"Pengalaman yang sangat berharga,\" ujar salah satu peserta magang.",
+      "gambar_url": null,
+      "kategori_nama": "Kegiatan",
+      "kategori_slug": "kegiatan",
+      "penulis": "Redaksi",
+      "status": "draft",
+      "created_at": "2026-10-03T22:43:24.18127+00:00"
+    },
+    {
+      "id": "1cbee751-03e5-4ac7-9d8b-de6baae29072",
+      "judul": "Siswa Magang Raih Juara Lomba Karya Tulis",
+      "slug": "siswa-magang-raih-juara-lomba-karya-tulis",
+      "ringkasan": "Prestasi membanggakan dari tim magang di lomba karya tulis tingkat kota.",
+      "isi": "Tim magang berhasil meraih juara 1 lomba karya tulis tingkat kota dengan tema inovasi industri.\n\nSelamat kepada para pemenang!",
+      "gambar_url": null,
+      "kategori_nama": "Prestasi",
+      "kategori_slug": "prestasi",
+      "penulis": "Redaksi",
+      "status": "draft",
+      "created_at": "2026-10-03T22:43:24.18127+00:00"
+    },
+    {
+      "id": "73c7fe64-a676-4ac4-9d23-8ae10f28906d",
+      "judul": "Pengumuman Jadwal Magang Semester Genap",
+      "slug": "pengumuman-jadwal-magang-semester-genap",
+      "ringkasan": "Jadwal magang semester genap telah dirilis. Simak tanggal pentingnya.",
+      "isi": "Diumumkan bahwa jadwal magang semester genap akan dimulai pada awal Februari.\n\nSiswa diminta untuk melengkapi berkas administrasi sebelum tanggal yang ditentukan.",
+      "gambar_url": null,
+      "kategori_nama": "Pengumuman",
+      "kategori_slug": "pengumuman",
+      "penulis": "Admin",
+      "status": "draft",
+      "created_at": "2026-10-03T22:43:24.18127+00:00"
+    }
+  ]
+}
